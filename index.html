@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trouver des Toilettes Publiques</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <h1>� Toilettes Publiques</h1>
+            <p>Trouvez les toilettes publiques les plus proches</p>
+        </header>
+
+        <div id="location-permission" class="permission-box">
+            <div class="permission-content">
+                <h3>📍 Autoriser la localisation</h3>
+                <p>Cette application a besoin de votre position pour trouver les toilettes publiques proches.</p>
+                <button id="enable-location" class="btn-primary">
+                    Autoriser ma position
+                </button>
+            </div>
+        </div>
+
+        <div id="loading" class="loading-box" style="display: none;">
+            <div class="spinner"></div>
+            <p>Recherche de votre position...</p>
+        </div>
+
+        <div id="error-message" class="error-box" style="display: none;"></div>
+
+        <main class="main-content">
+            <div id="nearest-stop" class="nearest-stop" style="display: none;">
+                <h2>� Toilettes les plus proches</h2>
+                <div class="stop-info">
+                    <h3 id="stop-name"></h3>
+                    <p id="stop-distance"></p>
+                    <p id="stop-lines"></p>
+                    <button id="show-directions" class="btn-secondary">
+                        🗺️ Voir sur la carte
+                    </button>
+                </div>
+            </div>
+
+            <div id="all-stops" class="stops-list" style="display: none;">
+                <h2>📍 Toutes les toilettes proches</h2>
+                <div id="stops-container"></div>
+            </div>
+        </main>
+
+        <div id="map" class="map-container" style="display: none;">
+            <button id="close-map" class="close-map-btn">✖</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
