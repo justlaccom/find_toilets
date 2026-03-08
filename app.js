@@ -427,6 +427,44 @@ enableLocationBtn.addEventListener('click', requestLocation);
 showDirectionsBtn.addEventListener('click', initMap);
 closeMapBtn.addEventListener('click', closeMap);
 
+// Vérifier les paramètres URL au chargement de la page
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const lat = urlParams.get('lagitude');
+    const lng = urlParams.get('longitude');
+    
+    if (lat && lng) {
+        // Utiliser les coordonnées depuis l'URL
+        const latitude = parseFloat(lat);
+        const longitude = parseFloat(lng);
+        
+        if (!isNaN(latitude) && !isNaN(longitude)) {
+            userLocation = {
+                lat: latitude,
+                lng: longitude
+            };
+            
+            // Masquer la boîte de permission et afficher le chargement
+            permissionBox.style.display = 'none';
+            loadingBox.style.display = 'block';
+            loadingBox.innerHTML = `
+                <div class="spinner"></div>
+                <p>Utilisation de la position fournie...</p>
+            `;
+            
+            // Obtenir et afficher le nom de la ville
+            getCityName(userLocation.lat, userLocation.lng).then(cityName => {
+                displayLocationInfo(cityName);
+            });
+            
+            // Charger les toilettes après un court délai pour l'UX
+            setTimeout(() => {
+                loadRealBusStops();
+            }, 1000);
+        }
+    }
+});
+
 // Fermer la carte avec la touche Échap
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && mapContainer.style.display === 'block') {
