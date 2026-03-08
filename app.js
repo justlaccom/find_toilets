@@ -64,6 +64,25 @@ async function fetchRealBusStops(lat, lng, radius = 2000) {
     }
 }
 
+// Obtenir le nom de la ville à partir des coordonnées
+async function getCityName(lat, lng) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1&accept-language=fr`;
+    
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data && data.address) {
+            // Prioriser la ville, puis la commune, puis le village
+            return data.address.city || data.address.town || data.address.village || data.address.municipality || 'Localisation inconnue';
+        }
+        return 'Localisation inconnue';
+    } catch (error) {
+        console.error('Erreur lors de la récupération du nom de la ville:', error);
+        return 'Localisation inconnue';
+    }
+}
+
 // Obtenir le nom des toilettes
 function getToiletName(tags, id) {
     if (tags.name) {
@@ -169,6 +188,11 @@ function requestLocation() {
                     lng: position.coords.longitude
                 };
                 
+                // Obtenir et afficher le nom de la ville
+                getCityName(userLocation.lat, userLocation.lng).then(cityName => {
+                    displayLocationInfo(cityName);
+                });
+                
                 loadingBox.style.display = 'none';
                 
                 // Charger les vrais arrêts de bus
@@ -248,6 +272,29 @@ function displayAllStops(stops) {
     });
     
     allStopsBox.style.display = 'block';
+}
+
+// Afficher les informations de localisation
+function displayLocationInfo(cityName) {
+    // Créer ou mettre à jour l'élément d'information de localisation
+    let locationInfo = document.getElementById('location-info');
+    if (!locationInfo) {
+        locationInfo = document.createElement('div');
+        locationInfo.id = 'location-info';
+        locationInfo.className = 'location-info';
+        
+        // Ajouter après le header
+        const header = document.querySelector('.header');
+        header.insertAdjacentElement('afterend', locationInfo);
+    }
+    
+    locationInfo.innerHTML = `
+        <div class="location-text">
+            📍 Localisé à : <strong>${cityName}</strong>
+        </div>
+    `;
+    locationInfo.style.display = 'block';
+    locationInfo.classList.add('fade-in');
 }
 
 // Afficher une erreur
